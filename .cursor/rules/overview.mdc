@@ -1,0 +1,141 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# Minitalk Project Overview
+
+## Goal
+Le projet Minitalk vise à développer un programme simple permettant la communication entre processus en utilisant un protocole minimaliste basé sur l'envoi et la réception de signaux UNIX. Ce protocole consiste à transmettre des messages en convertissant les caractères en bits, puis en envoyant chaque bit via un signal (SIGUSR1 ou SIGUSR2).
+
+## Contexte Général et Communication
+- **Speaker/Client** : Envoie le message en transmettant une série de signaux représentant chaque bit du message.
+- **Listener/Server** : Reçoit les signaux, réassemble les bits en caractères et affiche le message complet.
+
+## Processes & Signals
+
+### Qu'est-ce qu'un Signal ?
+- Un **signal** est un message envoyé à un processus pour indiquer qu'un événement particulier s'est produit.
+- Exemples :
+  - `kill <PID>` : Termine un processus spécifique.
+  - `killall <process_name>` : Termine tous les processus d'un type donné.
+
+### PID (Process ID)
+- Chaque processus possède un **PID**, un identifiant unique indispensable pour envoyer des signaux à un processus précis (le serveur, dans ce projet).
+
+## Fonctions Autorisées
+Utilisées pour manipuler et gérer les signaux :
+### signal()
+```c
+sighandler_t signal(int signum, sighandler_t handler);
+```
+La fonction `signal()` permet de spécifier une fonction handler qui sera exécutée lorsqu'un signal particulier est reçu.
+
+### sigemptyset()
+```c
+int sigemptyset(sigset_t *set);
+```
+Initialise un ensemble de signaux vide.
+
+### sigaddset()
+```c
+int sigaddset(sigset_t *set, int signum);
+```
+Ajoute un signal à un ensemble de signaux.
+
+### sigaction()
+```c
+int sigaction(int signum, const struct sigaction *act, struct sigaction *oldact);
+```
+Définit la manière dont le processus doit se comporter lorsqu'il reçoit un signal.
+
+### kill()
+```c
+int kill(pid_t pid, int sig);
+```
+Envoie un signal à un processus identifié par son PID.
+
+### getpid()
+```c
+pid_t getpid(void);
+```
+Renvoie l'ID du processus courant.
+
+### pause()
+```c
+int pause(void);
+```
+Met le processus en sommeil jusqu'à ce qu'il reçoive un signal.
+
+### sleep()
+```c
+unsigned int sleep(unsigned int seconds);
+```
+Suspend l'exécution pendant un nombre spécifié de secondes.
+
+### usleep()
+```c
+int usleep(useconds_t usec);
+```
+Suspend l'exécution pendant un nombre spécifié de microsecondes.
+
+### exit()
+```c
+void exit(int status);
+```
+Termine le processus en cours avec le code de sortie spécifié.
+
+## Structure du Projet
+- **Deux exécutables** : Un pour le serveur et un pour le client.
+- **Fichiers Sources** : Par exemple `server.c` et `client.c` (éventuellement avec des fichiers d'aide comme `utils.c`/`utils.h`).
+- **Makefile** : Doit compiler les deux exécutables avec les règles `all`, `clean`, `fclean`, et `re` ainsi que les drapeaux de compilation `-Wall -Wextra -Werror`.
+
+## Notions Clés à Maîtriser
+- **Signaux UNIX** : Comprendre comment envoyer et recevoir des signaux via `kill()`, `signal()` et `sigaction()`.
+- **Conversion de Données** : Transformer un caractère en 8 bits et transmettre ces bits successivement.
+- **Synchronisation** : Utilisation de `usleep()` pour temporiser l'envoi des signaux et éviter d'inonder le serveur.
+- **Gestion des Processus** : Utilisation de `getpid()` pour obtenir et afficher le PID du serveur ; savoir envoyer des signaux à partir du client.
+- **Validation des Arguments** : Le client doit recevoir exactement deux arguments (PID du serveur et message).
+- **Norme & Contraintes** :
+  - Respecter le style de codage imposé (par exemple, une seule variable globale par programme).
+  - Assurer la robustesse (aucune fuite de mémoire, gestion des erreurs, absence de segmentation fault).
+- **Méthodologie de Conception** :
+  - Analyser et décomposer le problème en deux parties (serveur et client).
+  - Mettre en place des handlers de signaux pour capter et traiter les signaux reçus.
+
+## Étapes de Mise en Œuvre
+1. **Analyse et Conception**
+   - Comprendre le rôle de chaque programme (serveur qui reçoit, client qui envoie).
+   - Se familiariser avec la conversion binaire et l'envoi bit à bit.
+2. **Implémentation du Serveur**
+   - Afficher le PID avec `getpid()`.
+   - Installer un handler pour capturer les signaux (SIGUSR1 et SIGUSR2).
+   - Réassembler les bits reçus pour former des caractères, puis afficher le message final.
+   - Boucle d'attente avec `pause()`.
+3. **Implémentation du Client**
+   - Vérifier et valider les arguments (PID et message).
+   - Convertir chaque caractère en bits et envoyer chaque bit via `kill()` (choix du signal selon la valeur du bit).
+   - Introduire des temporisations avec `usleep()` entre l'envoi des signaux.
+   - Envoyer un octet nul pour indiquer la fin du message.
+4. **Bonus Optionnel**
+   - Implémenter une confirmation de réception (le serveur renvoie un signal au client).
+   - Support pour l'envoi de caractères Unicode.
+
+## Conseils de Développement
+- **Modularité** : Décomposer le code en fonctions spécifiques pour chaque tâche.
+- **Tests** : Tester indépendamment le serveur et le client.
+- **Robustesse** : Gérer les erreurs (ex. PID invalide, échec de l'envoi de signaux).
+- **Documentation** : Bien commenter le code et respecter les conventions de codage.
+
+## Outils Recommandés
+- **Valgrind** : Pour vérifier l'absence de fuites de mémoire.
+- **Make** : Pour automatiser la compilation.
+- **Debuggers** : Pour suivre l'exécution et diagnostiquer les problèmes liés aux signaux.
+- **Manuels** : Se référer aux pages de manuel (`man signal`, `man kill`, etc.) pour plus de détails sur l'utilisation des fonctions.
+
+## Récapitulatif
+- Créez un **serveur** qui affiche son PID, capte et réassemble les signaux en message.
+- Créez un **client** qui convertit un message en séquence de bits et l'envoie au serveur via des signaux.
+- Utilisez exclusivement **SIGUSR1** et **SIGUSR2** pour la communication.
+- Respectez strictement les contraintes de codage, les règles de compilation et la gestion de la mémoire.
+- Testez minutieusement chaque composante pour assurer la robustesse et la conformité au cahier des charges.

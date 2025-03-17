@@ -1,0 +1,155 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# Brief du projet Minitalk
+
+## 1. Titre du projet
+**Nom du projet : Minitalk**
+
+Le projet porte le nom "Minitalk". Ce titre reflète son objectif principal : établir une communication minimaliste entre deux programmes (un client et un serveur) en utilisant des mécanismes simples mais spécifiques, en l'occurrence les signaux UNIX.
+
+---
+
+## 2. But du projet
+**Quel est l’objectif principal ?**
+
+L’objectif principal de **Minitalk** est de créer un programme permettant un **échange de données** entre un **client** et un **serveur** en utilisant **uniquement les signaux UNIX**, spécifiquement **SIGUSR1** et **SIGUSR2**. Plus précisément :
+
+- Le **client** doit pouvoir envoyer une **chaîne de caractères** (un message) au serveur en utilisant le **PID** (identifiant de processus) du serveur.
+- Le **serveur**, une fois lancé, doit être capable de **recevoir ce message** envoyé par le client et de **l’afficher** sur la sortie standard (par exemple, le terminal).
+- La communication repose entièrement sur les signaux UNIX, sans utiliser d'autres moyens comme des fichiers ou des sockets.
+
+Ce projet vise à explorer et maîtriser la gestion des signaux dans un environnement UNIX, tout en développant des compétences en programmation système et en gestion des processus.
+
+---
+
+## 3. Contraintes et règles
+**Quelles sont les consignes ou limitations à respecter ?**
+
+Le projet impose des contraintes strictes pour garantir un code robuste, conforme aux standards et adapté aux spécificités des signaux UNIX. Voici les règles détaillées :
+
+### Langage et normes
+- Le programme doit être écrit en **C** et respecter les conventions de la **Norme** (un ensemble de règles de codage strictes, probablement définies dans le contexte du projet).
+- Les bonus, s’ils sont inclus, doivent également respecter cette norme sous peine de recevoir une note de 0.
+
+### Robustesse
+- Les fonctions ne doivent pas provoquer de **plantages inattendus** (exemples : segmentation fault, bus error, double free).
+- Toute **allocation de mémoire** (via `malloc`) doit être **libérée correctement** (via `free`) pour éviter les **fuites de mémoire**.
+
+### Compilation
+- Un **Makefile** est obligatoire pour compiler le projet. Il doit :
+  - Utiliser les drapeaux de compilation `-Wall`, `-Wextra`, et `-Werror` (pour détecter et interdire les avertissements).
+  - Inclure au minimum les règles : `$(NAME)`, `all`, `clean`, `fclean`, et `re`.
+  - Ne pas relinker inutilement (c’est-à-dire ne pas recompiler si rien n’a changé).
+- Si une bibliothèque comme **libft** est utilisée, elle doit être incluse dans un dossier `libft` avec son propre Makefile, et le Makefile principal doit la compiler avant le projet.
+
+### Fonctions autorisées
+Seules les fonctions suivantes peuvent être utilisées pour la partie obligatoire :
+- `write` : pour afficher des messages.
+- `ft_printf` (ou une version personnelle équivalente) : pour formater la sortie.
+- `signal`, `sigemptyset`, `sigaddset`, `sigaction` : pour gérer les signaux UNIX.
+- `kill` : pour envoyer des signaux.
+- `getpid` : pour obtenir le PID du processus.
+- `malloc` et `free` : pour la gestion de la mémoire.
+- `pause`, `sleep`, `usleep` : pour gérer les temporisations.
+- `exit` : pour quitter proprement le programme.
+
+### Variables globales
+- Une seule **variable globale** est autorisée par programme (une pour le client, une pour le serveur). Son utilisation doit être **justifiée** (par exemple, pour stocker un état partagé entre fonctions).
+
+### Spécificités du fonctionnement
+- Le **serveur** doit être lancé en premier et afficher son **PID** immédiatement.
+- Le **client** prend deux paramètres en ligne de commande :
+  1. Le **PID du serveur**.
+  2. La **chaîne de caractères** à envoyer.
+- La communication doit se faire **uniquement via SIGUSR1 et SIGUSR2**.
+- Le serveur doit afficher les messages **rapidement** (moins de 1 seconde pour 100 caractères).
+- Le serveur doit pouvoir recevoir des messages de **plusieurs clients successivement** sans avoir à redémarrer.
+- Particularité sur Linux : les signaux ne sont **pas mis en file d’attente** si plusieurs signaux du même type sont en attente, ce qui nécessite une gestion soigneuse.
+
+### Bonus (optionnel)
+- Les bonus ne seront évalués que si la partie obligatoire est **parfaite** (aucune erreur, aucun dysfonctionnement).
+- Fonctionnalités bonus possibles :
+  - Le serveur renvoie un **signal de retour** au client pour accuser réception.
+  - Support des caractères **Unicode**.
+
+---
+
+## 4. Contenu
+**Quelles informations ou éléments doivent être inclus dans le projet ?**
+
+Le projet **Minitalk** doit comporter les éléments suivants :
+
+### Exécutables
+- Deux programmes distincts :
+  - **`server`** : le programme serveur qui écoute les signaux et affiche les messages reçus.
+  - **`client`** : le programme client qui envoie une chaîne au serveur.
+
+### Fonctionnalités spécifiques
+- **Serveur** :
+  - Affiche son **PID** dès son lancement (pour que le client puisse l’utiliser).
+  - Reçoit les messages sous forme de signaux et les affiche.
+- **Client** :
+  - Prend en paramètres le **PID du serveur** et une **chaîne de caractères**.
+  - Convertit la chaîne en signaux (via SIGUSR1 et SIGUSR2) et l’envoie au serveur.
+
+### Makefile
+- Un fichier **Makefile** pour compiler les sources en deux exécutables : `client` et `server`.
+- Doit inclure les règles standard (`$(NAME)`, `all`, `clean`, `fclean`, `re`) et utiliser les drapeaux `-Wall`, `-Wextra`, `-Werror`.
+- Si **libft** est utilisée, elle doit être intégrée et compilée via le Makefile.
+
+### Gestion des signaux
+- Utilisation exclusive de **SIGUSR1** et **SIGUSR2** pour transmettre les données (par exemple, en encodant les bits d’un caractère avec ces signaux).
+
+### Bonus (optionnel)
+- Fichiers séparés (ex. suffixés `_bonus.c` ou `_bonus.h`) pour les fonctionnalités bonus :
+  - Signal de retour du serveur au client.
+  - Support des caractères Unicode.
+
+---
+
+## 5. Résultat attendu
+**À quoi doit ressembler le rendu final ?**
+
+Le rendu final de **Minitalk** doit être un programme fonctionnel, robuste et conforme aux exigences. Voici à quoi il doit ressembler :
+
+### Comportement général
+- **Lancement du serveur** :
+  - Exécutez `./server` dans un terminal.
+  - Le serveur affiche immédiatement son PID (par exemple : `PID: 12345`) et attend les signaux.
+- **Lancement du client** :
+  - Exécutez `./client 12345 "Bonjour le monde"` (en remplaçant `12345` par le PID du serveur).
+  - Le client envoie la chaîne "Bonjour le monde" au serveur via des signaux.
+- **Affichage par le serveur** :
+  - Le serveur affiche "Bonjour le monde" presque instantanément (moins de 1 seconde pour une chaîne courte).
+
+### Robustesse
+- Le programme ne plante pas (pas de segmentation fault, bus error, etc.).
+- Aucune fuite de mémoire n’est détectée (vérifiable avec des outils comme `valgrind`).
+- Le serveur peut gérer plusieurs clients consécutifs sans redémarrer (par exemple, un deuxième client peut envoyer "Hello" juste après).
+
+### Performance
+- L’affichage des messages est rapide (moins de 1 seconde pour 100 caractères).
+
+### Bonus (si implémenté)
+- Après réception d’un message, le serveur envoie un signal au client pour confirmer (le client pourrait alors afficher "Message bien reçu" par exemple).
+- Le client peut envoyer des caractères Unicode (ex. "こんにちは") et le serveur les affiche correctement.
+
+### Livraison
+- Le code source est soumis dans un **dépôt Git** avec :
+  - Les fichiers sources pour `client` et `server`.
+  - Un **Makefile** fonctionnel.
+  - Éventuellement un dossier `libft` si utilisé.
+- Le tout compile sans erreur avec les drapeaux spécifiés et respecte la Norme.
+
+---
+
+### Exemple d’utilisation
+1. Terminal 1 : `./server`
+   - Sortie : `PID: 12345`
+2. Terminal 2 : `./client 12345 "Salut"`
+   - Le serveur affiche : `Salut`
+3. Terminal 2 : `./client 12345 "Encore"`
+   - Le serveur affiche : `Encore` (sans redémarrer).

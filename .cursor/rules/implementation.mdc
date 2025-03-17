@@ -1,0 +1,185 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# Plan détaillé pour le projet Minitalk
+
+Voici un plan détaillé, étape par étape, pour réaliser le projet **Minitalk** en conformité avec les spécifications et les règles du fichier `@general_rules.mdc`. 
+
+---
+
+## Étape 1 : Analyse et conception
+
+- **Lire attentivement le cahier des charges** :  
+  - Le serveur doit afficher son PID et écouter les signaux SIGUSR1 et SIGUSR2, assembler les bits en caractères et afficher le message final.  
+  - Le client doit prendre deux arguments (le PID du serveur et le message) et envoyer chaque caractère du message bit par bit via les signaux.
+
+- **Décomposer le problème** :  
+  - **Partie serveur** : Réception des signaux, conversion des bits en caractère, affichage et (optionnel) envoi d’une confirmation de réception.  
+  - **Partie client** : Conversion du message en suite de signaux et gestion de la temporisation entre chaque signal pour garantir une réception fiable.
+
+- **Définir l’architecture** :  
+  - Deux exécutables distincts (`server` et `client`).
+  - (Optionnel) Un fichier utilitaire commun pour la gestion des erreurs ou des fonctions d’aide (par exemple, pour la conversion ou la temporisation).
+
+---
+
+## Étape 2 : Organisation de l’arborescence du projet
+
+- **Structure du répertoire** :
+  - À la racine, placez vos fichiers sources et le Makefile.
+  - Exemples de fichiers :
+    - `server.c` : Code du serveur.
+    - `client.c` : Code du client.
+    - (Optionnel) `utils.c` et `utils.h` pour des fonctions auxiliaires.
+
+- **Création du Makefile** :  
+  - Doit compiler deux exécutables : `server` et `client`.
+  - Inclure les règles obligatoires : `all`, `clean`, `fclean`, `re`.
+  - Utiliser les drapeaux `-Wall -Wextra -Werror`.
+
+---
+
+## Étape 3 : Implémentation du serveur
+
+1. **Préparation du fichier `server.c`**  
+   - Inclure les headers nécessaires :  
+     ```c
+     #include <signal.h>
+     #include <unistd.h>
+     #include <stdlib.h>
+     #include <stdio.h>
+     ```
+   - Insérer l'en-tête standard 42 (conformément à la norme).
+
+2. **Affichage du PID** :  
+   - Dès le lancement, obtenir le PID avec `getpid()` et l’afficher sur la sortie standard.
+
+3. **Définition des variables globales** :  
+   - **Autorisation** : Une seule variable globale par programme est autorisée.  
+   - Par exemple, une variable globale (statique) pour stocker des informations utiles dans le handler (mais à utiliser avec parcimonie, en respectant la Norme).
+
+4. **Mise en place du handler pour les signaux** :  
+   - Utiliser la structure `sigaction` pour définir un handler commun pour SIGUSR1 et SIGUSR2.
+   - À l’intérieur du handler, utiliser des variables statiques (par exemple, `static int bit_count` et `static char current_char`) pour :
+     - Décaler et accumuler le bit reçu dans `current_char`.
+     - Incrémenter le compteur de bits.
+     - Lorsqu’on a reçu 8 bits (un octet complet) :
+       - Afficher le caractère (avec `write()`).
+       - Réinitialiser le compteur et la variable.
+     - (Optionnel) Si le caractère reçu est le caractère nul (`'\0'`), afficher une nouvelle ligne ou réinitialiser un buffer.
+
+5. **Boucle d'attente** :  
+   - Utiliser la fonction `pause()` dans le `main` pour que le serveur attende indéfiniment la réception des signaux.
+
+---
+
+## Étape 4 : Implémentation du client
+
+1. **Préparation du fichier `client.c`**  
+   - Inclure les headers nécessaires :  
+     ```c
+     #include <signal.h>
+     #include <unistd.h>
+     #include <stdlib.h>
+     #include <stdio.h>
+     ```
+   - Ajouter l'en-tête standard 42.
+
+2. **Validation des arguments** :  
+   - Vérifier que le programme reçoit exactement deux arguments (le PID du serveur et le message).
+   - Convertir le PID (argument 1) de chaîne en entier (avec `atoi` par exemple).
+
+3. **Envoi du message** :  
+   - Parcourir le message caractère par caractère.
+   - Pour chaque caractère, envoyer successivement ses 8 bits :
+     - Pour chaque bit (en allant du bit le plus significatif au moins significatif) :
+       - Si le bit est 0, envoyer **SIGUSR1**.
+       - Si le bit est 1, envoyer **SIGUSR2**.
+       - Utiliser la fonction `kill(pid, signal)` pour envoyer le signal au serveur.
+       - Ajouter une temporisation (par exemple avec `usleep(50)` ou `usleep(100)`) pour garantir que le serveur ait le temps de traiter chacun des signaux.
+   - **Terminaison du message** :  
+     - Envoyer ensuite un octet nul (`'\0'`) en suivant la même méthode pour indiquer la fin du message.
+
+4. **(Optionnel – Bonus)** Gestion de la confirmation :  
+   - Si vous décidez d'implémenter le bonus, prévoyez un handler dans le client pour recevoir un signal de confirmation envoyé par le serveur.
+   - Afficher un message du type "Message bien reçu" dès réception du signal de confirmation.
+
+---
+
+## Étape 5 : Synchronisation et robustesse
+
+- **Temporalisation dans l’envoi des signaux** :  
+  - Insérer des pauses entre les envois d’un signal et le suivant pour éviter la perte de signaux, surtout en cas de transmission rapide.
+
+- **Gestion des erreurs** :  
+  - Vérifier que la fonction `kill()` réussit pour chaque envoi.
+  - En cas d’erreur (par exemple, si le PID est invalide), afficher un message d’erreur et quitter proprement.
+
+- **(Optionnel – Bonus)** Implémenter la confirmation du message :
+  - Le serveur, après réception complète du message, peut envoyer un signal de retour au client pour confirmer la réception.
+  - Le client, grâce à un handler spécifique, affichera alors un message de succès.
+
+---
+
+## Étape 6 : Rédaction du Makefile
+
+1. **Création du fichier Makefile**  
+   - Placez-le à la racine du projet.
+
+2. **Règles à inclure** :
+   - `all` : Compiler les deux exécutables (`server` et `client`).
+   - `clean` : Supprimer les fichiers objets générés.
+   - `fclean` : Supprimer les fichiers objets et les exécutables.
+   - `re` : Recompiler entièrement le projet.
+   - Utiliser les drapeaux de compilation `-Wall -Wextra -Werror`.
+   - Assurez-vous que le Makefile ne force pas de recompilation inutile (pour ne pas relinker sans besoin).
+
+---
+
+## Étape 7 : Tests et débogage
+
+1. **Tests unitaires** :
+   - Lancer le serveur (`./server`) et vérifier que le PID est affiché correctement.
+   - Lancer le client avec le PID obtenu et tester divers messages, par exemple :  
+     ```bash
+     $ ./client 12345 "Bonjour le monde"
+     ```
+
+2. **Observations** :  
+   - Vérifier que le texte est affiché dans le terminal du serveur.
+   - Tester avec des messages courts et longs, avec éventuellement des espaces et des caractères spéciaux.
+
+3. **Validation de robustesse** :
+   - Tester avec des PID incorrects.
+   - Utiliser `valgrind` si vous effectuez des allocations (même si dans ce projet l'usage de `malloc` est limité) pour vérifier l'absence de fuite de mémoire.
+
+4. **Respect des contraintes de la Norme** :
+   - Vérifier la longueur de vos fonctions (max 25 lignes).
+   - Vérifier le respect de l'indentation (tabulations).
+   - S'assurer de la conformité aux conventions de dénomination (noms en anglais, snake_case, etc.).
+
+---
+
+## Étape 8 : Documentation et livraison
+
+- **Commentaires et en-tête 42** :  
+  - Ajoutez l’en-tête standard 42 au début de chaque fichier `.c` et `.h`.
+  - Commentez les parties importantes du code en anglais (de façon utile et concise).
+
+- **Dépôt Git** :  
+  - Organisez vos commits de manière cohérente pour faciliter la revue.
+  - Assurez-vous que le dépôt contient tous les fichiers indispensables pour compiler le projet (Makefile, sources, potentiellement la libft si utilisée).
+
+---
+
+## Étape 9 : (Optionnel) Bonus
+
+- **Confirmation du message par le serveur** :  
+  - Après transmission complète d’un message (par exemple, à réception du caractère nul), le serveur peut envoyer par `kill()` un signal (ex. SIGUSR1) au client pour confirmer.
+  - Implémentez un handler dans le client qui, à la réception de ce signal, affiche "Message bien reçu" ou un message équivalent.
+  
+- **Support des caractères Unicode** :  
+  - Si vous souhaitez aller plus loin, vérifiez que la conversion et l’envoi des bits le permettent (attention aux encodages).
+

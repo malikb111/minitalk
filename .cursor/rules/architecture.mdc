@@ -1,0 +1,27 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# Architecture du projet Minitalk
+
+Minitalk/
+├── Makefile
+├── include/
+│   └── minitalk.h
+├── libft/
+│   ├── Makefile
+│   ├── include/
+│   │   └── libft.h
+│   └── src/
+│       └── ...
+└── src/
+    ├── client/
+    │   ├── client.c
+    │   └── client_bonus.c
+    ├── server/
+    │   ├── server.c
+    │   └── server_bonus.c
+    └── utils/
+        ├── utils.c
+        └── utils.h
