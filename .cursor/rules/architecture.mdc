@@ -14,7 +14,7 @@ Minitalk/
 │   ├── include/
 │   │   └── libft.h
 │   └── src/
-│       └── ...
+│       └── ... (fichier sources de libft.h)
 └── src/
     ├── client/
     │   ├── client.c
