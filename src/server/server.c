@@ -1,36 +1,54 @@
-#include "../../include/minitalk.h"
-// Prototypes pour les fonctions du serveur
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   server.c                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: abbouras <abbouras@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/03/18 12:43:07 by abbouras          #+#    #+#             */
+/*   Updated: 2025/03/18 12:43:38 by abbouras         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
-/*
-** main:
-** Point d'entrée du serveur.
-** - Affiche le PID du serveur dès le lancement afin que le client puisse l'utiliser.
-** - Configure la gestion des signaux via setup_signal_handler.
-** - Attend indéfiniment les signaux (via pause ou une boucle).
-*/
+#include "../../include/minitalk.h"
+
+/**
+ * @brief Server entry point.
+ *
+ * Displays the server PID at startup so that clients can use it.
+ * Sets up signal handling using setup_signal_handler.
+ * Waits indefinitely for signals (using pause or a loop).
+ *
+ * @return int Returns 0 on success.
+ */
 int	main(void)
 {
 	return (0);
 }
 
-/*
-** setup_signal_handler:
-** Configure le traitement des signaux SIGUSR1 et SIGUSR2 en utilisant sigaction.
-** - Associe les signaux à la fonction handle_signal.
-*/
+/**
+ * @brief Configures signal handling.
+ *
+ * Sets up the handling of SIGUSR1 and SIGUSR2 signals using sigaction.
+ * Associates these signals with the handle_signal function.
+ */
 static void	setup_signal_handler(void)
 {
-	// Implementation of setup_signal_handler function
+	return ;
 }
 
-/*
-** handle_signal:
-** Fonction de gestion des signaux.
-** - Reçoit les signaux et recompose les bits transmis pour former un caractère.
-** - Affiche le caractère lorsque 8 bits ont été accumulés.
-** - Gère également la fin du message (lorsqu'un caractère nul est reçu).
-*/
+/**
+ * @brief Handles incoming signals.
+ *
+ * Receives signals and reassembles the transmitted bits to form a character.
+ * Displays the character once 8 bits have been accumulated.
+ * Also manages the end of the message when a null character is received.
+ *
+ * @param signum The signal number received.
+ * @param info Pointer to a siginfo_t structure containing signal information.
+ * @param context Pointer to context information.
+ */
 void	handle_signal(int signum, siginfo_t *info, void *context)
 {
-	// Implementation of handle_signal function
+	return ;
 }

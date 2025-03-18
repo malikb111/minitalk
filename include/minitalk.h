@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minitalk.h                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: <votrelogin> <votremail>                     +#+  +:+       +#+        */
+/*   By: abbouras <abbouras@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/03/18 11:54:30 by <votrelogin>     #+#    #+#             */
-/*   Updated: 2025/03/18 11:54:30 by <votrelogin>    ###   ########.fr       */
+/*   Created: 2025/03/18 12:47:37 by abbouras          #+#    #+#             */
+/*   Updated: 2025/03/18 12:47:46 by abbouras         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,29 +18,28 @@
 # include <stdlib.h>
 # include <stdio.h>
 
-/*
-** send_message:
-** Envoie une chaîne de caractères terminée par '\0' au serveur identifié par server_pid.
-** Pour chaque caractère de la chaîne, la fonction appelle send_char afin de transmettre
-** chaque bit via les signaux SIGUSR1 et SIGUSR2.
-*/
+/**
+ * @brief Sends a message to the server identified by server_pid.
+ *
+ * For each character in the message, the function calls send_char
+ * to transmit each bit via the SIGUSR1 and SIGUSR2 signals.
+ */
 void	send_message(int server_pid, const char *message);
 
-/*
-** send_char:
-** Envoie un caractère au serveur spécifié par server_pid, bit par bit.
-** Chaque bit est envoyé sous forme de signal : SIGUSR1 pour un bit à 0 et SIGUSR2 pour un bit à 1.
-*/
+/**
+ * @brief Sends a character to the server identified by server_pid, bit by bit.
+ *
+ * Each bit is sent as a signal: SIGUSR1 for a 0 bit and SIGUSR2 for a 1 bit.
+ */
 void	send_char(int server_pid, char c);
 
-/*
-** handle_signal:
-** Fonction de gestion des signaux pour le serveur.
-** Reconstitue les bits reçus via les signaux en un caractère complet.
-** Une fois 8 bits accumulés, le caractère est affiché.
-** La fonction gère également la fin du message lorsque le caractère nul ('\0') est reçu.
-*/
+/**
+ * @brief Handles signals for the server.
+ *
+ * Reconstructs received bits into a complete character.
+ * Once 8 bits are accumulated, the character is displayed.
+ * Also handles the end of the message when a null character is received.
+ */
 void	handle_signal(int signum, siginfo_t *info, void *context);
-
 
 #endif
