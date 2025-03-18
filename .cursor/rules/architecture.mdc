@@ -3,23 +3,23 @@ description:
 globs: 
 alwaysApply: false
 ---
+# Architecture du projet Minitalk
+
 Minitalk/
-├── external/
-│   └── libft/
-│       ├── Makefile
-│       ├── include/
-│       │   └── libft.h
-│       └── src/
-│           └── ... (fichiers sources de libft)
+├── Makefile
 ├── include/
 │   └── minitalk.h
-├── src/
-│   ├── client/
-│   │   ├── client.c
-│   ├── server/
-│   │   ├── server.c
-│   └── utils/
-│       ├── utils.c
-│       └── utils.h
-├── Makefile
-└── README.md
+├── libft/
+│   ├── Makefile
+│   ├── include/
+│   │   └── libft.h
+│   └── src/
+│       └── ... (fichier sources de libft.h)
+└── src/
+    ├── client/
+    │   ├── client.c
+    ├── server/
+    │   ├── server.c
+    └── utils/
+        ├── utils.c
+        └── utils.h

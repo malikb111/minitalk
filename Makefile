@@ -6,7 +6,7 @@
 #    By: abbouras <abbouras@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/03/18 11:45:22 by abbouras          #+#    #+#              #
-#    Updated: 2025/03/18 12:01:03 by abbouras         ###   ########.fr        #
+#    Updated: 2025/03/18 12:56:35 by abbouras         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -18,6 +18,7 @@ LIBFT     = $(LIBFT_DIR)/libft.a
 
 CC      = gcc
 # CFLAGS  = -Wall -Wextra -Werror -Iinclude -I$(LIBFT_DIR)/include
+# A ENLEVER TRES IMPORTANT ---------------------------------------------------------------
 CFLAGS  = -Iinclude -I$(LIBFT_DIR)/include
 
 SRC_CLIENT = src/client/client.c src/utils/utils.c
