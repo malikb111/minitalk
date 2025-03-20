@@ -6,7 +6,7 @@
 #    By: abbouras <abbouras@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/03/18 11:45:22 by abbouras          #+#    #+#              #
-#    Updated: 2025/03/18 13:11:57 by abbouras         ###   ########.fr        #
+#    Updated: 2025/03/20 12:26:49 by abbouras         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -17,9 +17,9 @@ LIBFT_DIR = external/libft
 LIBFT     = $(LIBFT_DIR)/libft.a
 
 CC      = gcc
-# CFLAGS  = -Wall -Wextra -Werror -Iinclude -I$(LIBFT_DIR)/include
-# A ENLEVER TRES IMPORTANT ---------------------------------------------------------------
-CFLAGS  = -Iinclude -I$(LIBFT_DIR)/include
+# Correction du chemin d'inclusion
+# CFLAGS  = -Wall -Wextra -Werror -Iinclude -I$(LIBFT_DIR)
+CFLAGS  = -Iinclude -I$(LIBFT_DIR)
 
 SRC_CLIENT = src/client/client.c src/utils/utils.c
 OBJ_CLIENT = $(SRC_CLIENT:.c=.o)

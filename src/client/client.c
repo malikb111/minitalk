@@ -6,24 +6,24 @@
 /*   By: abbouras <abbouras@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/18 11:54:30 by abbouras          #+#    #+#             */
-/*   Updated: 2025/03/18 12:37:14 by abbouras         ###   ########.fr       */
+/*   Updated: 2025/03/19 22:05:49 by abbouras         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minitalk.h"
 
 /**
- * @brief Client entry point.
+ * @brief Point d'entrée du client.
  *
- * Checks that the number of arguments is correct (expected: 3
- * arguments), uses validate_arguments to convert argv[1]
- * to a PID and retrieve the message. In case of error, displays
- * an error via ft_error and returns 1.
+ * Vérifie que le nombre d'arguments est correct (attendu : 3
+ * arguments), utilise validate_arguments pour convertir argv[1]
+ * en PID et récupérer le message. En cas d'erreur, affiche
+ * une erreur via ft_error et retourne 1.
  *
- * @param argc Number of arguments passed in the command line.
- * @param argv Array of strings, where argv[1] contains
- *             the server's PID and argv[2] contains the message to send.
- * @return int Returns 0 on success, 1 on error.
+ * @param argc Nombre d'arguments passés en ligne de commande.
+ * @param argv Tableau de chaînes de caractères, où argv[1] contient
+ *             le PID du serveur et argv[2] contient le message à envoyer.
+ * @return int Retourne 0 en cas de succès, 1 en cas d'erreur.
  */
 int	main(int argc, char **argv)
 {
@@ -31,16 +31,16 @@ int	main(int argc, char **argv)
 }
 
 /**
- * @brief Checks and parses the arguments provided to the program.
+ * @brief Vérifie et analyse les arguments fournis au programme.
  *
- * Verifies that argc is equal to 3, converts argv[1] to an integer to
- * obtain the server PID, and assigns argv[2] to the message.
+ * Vérifie que argc est égal à 3, convertit argv[1] en un entier pour
+ * obtenir le PID du serveur, et assigne argv[2] au message.
  *
- * @param argc Number of arguments (expected: 3).
- * @param argv Array of strings.
- * @param server_pid Pointer to an int where the converted PID will be stored.
- * @param message Pointer to a string pointer where the message will be stored.
- * @return int Returns 0 if the arguments are valid, 1 otherwise.
+ * @param argc Nombre d'arguments (attendu : 3).
+ * @param argv Tableau de chaînes de caractères.
+ * @param server_pid Pointeur vers un int où le PID converti sera stocké.
+ * @param message Pointeur vers un pointeur de chaîne où le message sera stocké.
+ * @return int Retourne 0 si les arguments sont valides, 1 sinon.
  */
 static int	validate_arguments(int argc, char **argv, int *server_pid,
 		char **message)
@@ -49,14 +49,14 @@ static int	validate_arguments(int argc, char **argv, int *server_pid,
 }
 
 /**
- * @brief Sends a message to the server.
+ * @brief Envoie un message au serveur.
  *
- * Iterates over the message string and, for each character,
- * calls send_char to transmit its bits one by one via signals.
- * Also sends the null character ('\0') to indicate the end of the message.
+ * Parcourt la chaîne de caractères du message et, pour chaque caractère,
+ * appelle send_char pour transmettre ses bits un par un via des signaux.
+ * Envoie également le caractère nul ('\0') pour indiquer la fin du message.
  *
- * @param server_pid Server PID.
- * @param message Null-terminated string.
+ * @param server_pid PID du serveur.
+ * @param message Chaîne de caractères terminée par un caractère nul.
  */
 void	send_message(int server_pid, const char *message)
 {
@@ -64,15 +64,15 @@ void	send_message(int server_pid, const char *message)
 }
 
 /**
- * @brief Sends a character to the server by transmitting its 8 bits.
+ * @brief Envoie un caractère au serveur en transmettant ses 8 bits.
  *
- * For each bit (from the most significant to the least significant),
- * this function sends SIGUSR2 if the bit is 1, or SIGUSR1 if the bit is 0.
- * A short pause (usleep) is used to allow the server time to
- * process each signal.
+ * Pour chaque bit (du plus significatif au moins significatif),
+ * cette fonction envoie SIGUSR2 si le bit est 1, ou SIGUSR1 si le bit est 0.
+ * Un court délai (usleep) est utilisé pour permettre au serveur de
+ * traiter chaque signal.
  *
- * @param server_pid PID of the server to which the character is sent.
- * @param c Character to transmit.
+ * @param server_pid PID du serveur auquel le caractère est envoyé.
+ * @param c Caractère à transmettre.
  */
 void	send_char(int server_pid, char c)
 {
