@@ -6,7 +6,7 @@
 /*   By: abbouras <abbouras@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/18 12:47:37 by abbouras          #+#    #+#             */
-/*   Updated: 2025/03/24 02:58:29 by abbouras         ###   ########.fr       */
+/*   Updated: 2025/03/24 03:26:50 by abbouras         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,6 @@
 # include "../external/libft/libft.h"
 
 void	handle_signal(int signum, siginfo_t *info, void *context);
-void	ft_error(const char *error_message);
+void	ft_error(char *error_message);
 
 #endif

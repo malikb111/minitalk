@@ -6,7 +6,7 @@
 /*   By: abbouras <abbouras@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/18 12:45:30 by abbouras          #+#    #+#             */
-/*   Updated: 2025/03/20 12:22:52 by abbouras         ###   ########.fr       */
+/*   Updated: 2025/03/24 03:26:32 by abbouras         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@
  *
  * @param error_message Le message d'erreur à afficher.
  */
-void	ft_error(const char *error_message)
+void	ft_error(char *error_message)
 {
 	ft_putstr_fd(error_message, 2);
 	exit(1);

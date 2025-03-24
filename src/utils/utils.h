@@ -6,7 +6,7 @@
 /*   By: abbouras <abbouras@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/18 11:58:23 by abbouras          #+#    #+#             */
-/*   Updated: 2025/03/18 12:46:56 by abbouras         ###   ########.fr       */
+/*   Updated: 2025/03/24 03:26:40 by abbouras         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,6 @@
 
 # include "../../include/minitalk.h"
 
-void	ft_error(const char *error_message);
+void	ft_error(char *error_message);
 
 #endif
