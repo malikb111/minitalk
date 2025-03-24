@@ -6,17 +6,21 @@
 /*   By: abbouras <abbouras@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/18 11:54:30 by abbouras          #+#    #+#             */
-/*   Updated: 2025/03/19 22:05:49 by abbouras         ###   ########.fr       */
+/*   Updated: 2025/03/24 03:01:04 by abbouras         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minitalk.h"
 
+static int	check_args(int argc, char **argv, int *server_pid, char **message);
+static void	send_message(int server_pid, const char *message);
+static void	send_char(int server_pid, char c);
+
 /**
  * @brief Point d'entrée du client.
  *
  * Vérifie que le nombre d'arguments est correct (attendu : 3
- * arguments), utilise validate_arguments pour convertir argv[1]
+ * arguments), utilise check_args pour convertir argv[1]
  * en PID et récupérer le message. En cas d'erreur, affiche
  * une erreur via ft_error et retourne 1.
  *
@@ -27,6 +31,15 @@
  */
 int	main(int argc, char **argv)
 {
+	int		server_pid;
+	char	*message;
+
+	if (check_args(argc, argv, &server_pid, &message))
+	{
+		ft_error("Erreur: Usage: ./client [PID_serveur] [message]\n");
+		return (1);
+	}
+	send_message(server_pid, message);
 	return (0);
 }
 
@@ -42,9 +55,16 @@ int	main(int argc, char **argv)
  * @param message Pointeur vers un pointeur de chaîne où le message sera stocké.
  * @return int Retourne 0 si les arguments sont valides, 1 sinon.
  */
-static int	validate_arguments(int argc, char **argv, int *server_pid,
-		char **message)
+static int	check_args(int argc, char **argv, int *server_pid, char **message)
 {
+	if (argc != 3)
+		return (1);
+	*server_pid = ft_atoi(argv[1]);
+	if (*server_pid <= 0)
+		return (1);
+	*message = argv[2];
+	if (!(*message))
+		return (1);
 	return (0);
 }
 
@@ -60,7 +80,16 @@ static int	validate_arguments(int argc, char **argv, int *server_pid,
  */
 void	send_message(int server_pid, const char *message)
 {
-	return ;
+	int	i;
+
+	i = 0;
+	while (message[i])
+	{
+		send_char(server_pid, message[i]);
+		i++;
+	}
+	send_char(server_pid, '\0');
+	ft_printf("Message envoyé au serveur (PID: %d)\n", server_pid);
 }
 
 /**
@@ -76,5 +105,24 @@ void	send_message(int server_pid, const char *message)
  */
 void	send_char(int server_pid, char c)
 {
-	return ;
+	int	bit;
+	int	i;
+
+	i = 7;
+	while (i >= 0)
+	{
+		bit = (c >> i) & 1;
+		if (bit == 1)
+		{
+			if (kill(server_pid, SIGUSR2) == -1)
+				ft_error("Erreur: Signal SIGUSR2 non envoyé\n");
+		}
+		else
+		{
+			if (kill(server_pid, SIGUSR1) == -1)
+				ft_error("Erreur: Signal SIGUSR1 non envoyé\n");
+		}
+		usleep(100);
+		i--;
+	}
 }

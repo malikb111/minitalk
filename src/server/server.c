@@ -6,13 +6,14 @@
 /*   By: abbouras <abbouras@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/18 12:43:07 by abbouras          #+#    #+#             */
-/*   Updated: 2025/03/20 12:29:38 by abbouras         ###   ########.fr       */
+/*   Updated: 2025/03/24 03:01:50 by abbouras         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minitalk.h"
 
 static void	setup_signal_handler(void);
+
 void		handle_signal(int signum, siginfo_t *info, void *context);
 
 /**
@@ -66,7 +67,6 @@ void	handle_signal(int signum, siginfo_t *info, void *context)
 		if (c == 0)
 		{
 			ft_printf("\n");
-			kill(client_pid, SIGUSR1);
 			client_pid = 0;
 		}
 		else
